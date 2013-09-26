@@ -1,6 +1,12 @@
 Revision history for SHARYANTO-Proc-Util
 
-0.56    2012-09-10 (SHARYANTO)
+0.57    2013-09-26 (SHARYANTO)
+
+        - Fix failure on Ubuntu because pstree output is cut at 132 columns,
+          need to add -l (thanks Olivier Mengué).
+
+
+0.56    2013-09-10 (SHARYANTO)
 
         - No functional changes. Split from SHARYANTO-Utils to minimize
           dependencies (I'm trying to make Text::ANSITable work under Windows).

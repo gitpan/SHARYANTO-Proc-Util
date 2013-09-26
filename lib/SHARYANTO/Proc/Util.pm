@@ -8,7 +8,7 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(get_parent_processes);
 
-our $VERSION = '0.56'; # VERSION
+our $VERSION = '0.57'; # VERSION
 
 sub get_parent_processes {
     my ($pid) = @_;
@@ -16,8 +16,9 @@ sub get_parent_processes {
 
     # things will be simpler if we use the -s option, however not all versions
     # of pstree supports it.
+    # -l is for --long (to avoid pstree to cut its output at 132 cols)
 
-    my @lines = `pstree -pA`;
+    my @lines = `pstree -pAl`;
     return undef unless @lines;
 
     my @p;
@@ -65,7 +66,7 @@ SHARYANTO::Proc::Util - OS-process-related routines
 
 =head1 VERSION
 
-version 0.56
+version 0.57
 
 =head1 SYNOPSIS
 
