@@ -8,7 +8,7 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(get_parent_processes);
 
-our $VERSION = '0.57'; # VERSION
+our $VERSION = '0.58'; # VERSION
 
 sub get_parent_processes {
     my ($pid) = @_;
@@ -66,9 +66,11 @@ SHARYANTO::Proc::Util - OS-process-related routines
 
 =head1 VERSION
 
-version 0.57
+version 0.58
 
 =head1 SYNOPSIS
+
+=head1 DESCRIPTION
 
 =head1 FUNCTIONS
 
@@ -91,9 +93,28 @@ None are exported by default, but they are exportable.
 
 =head1 SEE ALSO
 
+L<SHARYANTO>
+
 L<Proc::ProcessTable>. Pros: does not depend on pstree command, process names
 not truncated by pstree. Cons: a little bit more heavyweight (uses File::Spec,
 Cwd, File::Find).
+
+=head1 HOMEPAGE
+
+Please visit the project's homepage at L<https://metacpan.org/release/SHARYANTO-Proc-Util>.
+
+=head1 SOURCE
+
+Source repository is at L<https://github.com/sharyanto/perl-SHARYANTO-Proc-Util>.
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website
+L<https://rt.cpan.org/Public/Dist/Display.html?Name=SHARYANTO-Proc-Util>
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
 
 =head1 AUTHOR
 
@@ -105,7 +126,5 @@ This software is copyright (c) 2013 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
-
-=head1 DESCRIPTION
 
 =cut

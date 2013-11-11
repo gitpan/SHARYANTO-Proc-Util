@@ -3,17 +3,21 @@
 use strict;
 use warnings;
 
-use Test::More 0.98 tests => 4;
+use File::Which;
 use SHARYANTO::Proc::Util 'get_parent_processes';
+use Test::More 0.98;
 
 my $ppids = get_parent_processes;
 
-SKIP: {
-    ok(defined $ppids, 'get_parent_process() result is defined')
-	or skip 'failure', 3;
-    is(ref($ppids), 'ARRAY', 'result is an ARRAY')
-	or skip 'failure', 2;
-    cmp_ok(scalar @$ppids, '>=', 2, 'at least 2 processes');
+if (which("pstree")) {
+    ok(defined $ppids, 'get_parent_process() result is defined');
+    is(ref($ppids), 'ARRAY', 'result is an ARRAY');
+    cmp_ok(scalar @$ppids, '>=', 2, 'at least 2 processes')
+        or diag explain $ppids;
     is($ppids->[0]->{pid}, getppid(), 'first process is getppid()')
 	or diag explain $ppids;
+} else {
+    ok(!defined($ppids), 'get_parent_process() result is not defined');
 }
+
+done_testing;

@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Proc-Util
 
+0.58    2013-11-11 (SHARYANTO)
+
+        - No functional changes. Revise test script to avoid CT failure reports.
+
+
 0.57    2013-09-26 (SHARYANTO)
 
         - Fix failure on Ubuntu because pstree output is cut at 132 columns,
