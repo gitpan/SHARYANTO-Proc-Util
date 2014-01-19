@@ -8,37 +8,48 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(get_parent_processes);
 
-our $VERSION = '0.58'; # VERSION
+our $VERSION = '0.59'; # VERSION
 
 sub get_parent_processes {
-    my ($pid) = @_;
+    my ($pid, $opts) = @_;
     $pid //= $$;
+    $opts //= {};
 
-    # things will be simpler if we use the -s option, however not all versions
-    # of pstree supports it.
-    # -l is for --long (to avoid pstree to cut its output at 132 cols)
-
-    my @lines = `pstree -pAl`;
-    return undef unless @lines;
-
-    my @p;
     my %proc;
-    for (@lines) {
-        my $i = 0;
-        while (/(?: (\s*(?:\|-?|`-)) | (.+?)\((\d+)\) )
-                (?: -[+-]- )?/gx) {
-            unless ($1) {
-                my $p = {name=>$2, pid=>$3};
-                $p[$i] = $p;
-                $p->{ppid} = $p[$i-1]{pid} if $i > 0;
-                $proc{$3} = $p;
+    if (($opts->{method} // 'proctable') eq 'pstree') {
+        # things will be simpler if we use the -s option, however not all
+        # versions of pstree supports it. -l is for --long (to avoid pstree to
+        # cut its output at 132 cols)
+
+        my @lines = `pstree -pAl`;
+        return undef unless @lines;
+
+        my @p;
+        for (@lines) {
+            my $i = 0;
+            while (/(?: (\s*(?:\|-?|`-)) | (.+?)\((\d+)\) )
+                    (?: -[+-]- )?/gx) {
+                unless ($1) {
+                    my $p = {name=>$2, pid=>$3};
+                    $p[$i] = $p;
+                    $p->{ppid} = $p[$i-1]{pid} if $i > 0;
+                    $proc{$3} = $p;
+                }
+                $i++;
             }
-            $i++;
+        }
+        #use Data::Dump; dd \%proc;
+    } else {
+        require Proc::ProcessTable;
+        state $pt = Proc::ProcessTable->new;
+        for my $p (@{ $pt->table }) {
+            $proc{ $p->{pid} } = {
+                name=>$p->{fname}, pid=>$p->{pid}, ppid=>$p->{ppid},
+            };
         }
     }
-    #use Data::Dump; dd \%proc;
 
-    @p = ();
+    my @p = ();
     my $cur_pid = $pid;
     while (1) {
         return if !$proc{$cur_pid};
@@ -58,7 +69,7 @@ __END__
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
@@ -66,17 +77,15 @@ SHARYANTO::Proc::Util - OS-process-related routines
 
 =head1 VERSION
 
-version 0.58
+version 0.59
 
 =head1 SYNOPSIS
-
-=head1 DESCRIPTION
 
 =head1 FUNCTIONS
 
 None are exported by default, but they are exportable.
 
-=head2 get_parent_processes($pid) => ARRAY
+=head2 get_parent_processes($pid[, \%opts]) => ARRAY
 
 Return an array containing information about parent processes of C<$pid> up to
 the parent of all processes (usually C<init>). If C<$pid> is not mentioned, it
@@ -88,8 +97,17 @@ followed by its parent, and so on. For example:
 Currently retrieves information by calling B<pstree> program. Return undef on
 failure.
 
+Known options:
 
-None are exported by default, but they are exportable.
+=over
+
+=item * method => STR (default: C<proctable>)
+
+Either C<proctable> (the default, which means to use L<Proc::ProcessTable>) or
+C<pstree> (which uses the B<pstree> command, which might not be portable between
+Unices).
+
+=back
 
 =head1 SEE ALSO
 
@@ -109,8 +127,7 @@ Source repository is at L<https://github.com/sharyanto/perl-SHARYANTO-Proc-Util>
 
 =head1 BUGS
 
-Please report any bugs or feature requests on the bugtracker website
-L<https://rt.cpan.org/Public/Dist/Display.html?Name=SHARYANTO-Proc-Util>
+Please report any bugs or feature requests on the bugtracker website L<https://rt.cpan.org/Public/Dist/Display.html?Name=SHARYANTO-Proc-Util>
 
 When submitting a bug or request, please include a test-file or a
 patch to an existing test-file that illustrates the bug or desired
@@ -122,7 +139,7 @@ Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Steven Haryanto.
+This software is copyright (c) 2014 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

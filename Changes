@@ -1,5 +1,11 @@
 Revision history for SHARYANTO-Proc-Util
 
+0.59    2013-11-11 (SHARYANTO)
+
+        - Use Proc::ProcessTable by default instead of 'pstree' command
+          (suggested by SREZIC, [RT#91932]).
+
+
 0.58    2013-11-11 (SHARYANTO)
 
         - No functional changes. Revise test script to avoid CT failure reports.
