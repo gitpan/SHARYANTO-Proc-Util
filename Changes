@@ -1,5 +1,11 @@
 Revision history for SHARYANTO-Proc-Util
 
+0.60    2014-04-10 (SHARYANTO)
+
+        - Trap failure in loading Proc::ProcessTable so this module can still be
+          used without it.
+
+
 0.59    2013-11-11 (SHARYANTO)
 
         - Use Proc::ProcessTable by default instead of 'pstree' command

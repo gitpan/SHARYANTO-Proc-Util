@@ -8,7 +8,7 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(get_parent_processes);
 
-our $VERSION = '0.59'; # VERSION
+our $VERSION = '0.60'; # VERSION
 
 sub get_parent_processes {
     my ($pid, $opts) = @_;
@@ -40,7 +40,9 @@ sub get_parent_processes {
         }
         #use Data::Dump; dd \%proc;
     } else {
-        require Proc::ProcessTable;
+        eval { require Proc::ProcessTable };
+        return undef if $@;
+
         state $pt = Proc::ProcessTable->new;
         for my $p (@{ $pt->table }) {
             $proc{ $p->{pid} } = {
@@ -77,7 +79,7 @@ SHARYANTO::Proc::Util - OS-process-related routines
 
 =head1 VERSION
 
-version 0.59
+version 0.60
 
 =head1 SYNOPSIS
 
