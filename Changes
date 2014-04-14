@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Proc-Util
 
+0.61    2014-04-14 (SHARYANTO)
+
+        - Skip test if get_parent_processes() returns undef [CT].
+
+
 0.60    2014-04-10 (SHARYANTO)
 
         - Trap failure in loading Proc::ProcessTable so this module can still be
